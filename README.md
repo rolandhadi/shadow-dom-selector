@@ -16,9 +16,9 @@ This library allows you to find elements on a webpage, even if they are nested w
 
 ## Installation
 - Using Browser Console
-  - You can use the Shadow DOM Selector library directly by pasting the following JavaScript code into your browser's console:
+  - You can use the [Shadow DOM Selector library](https://raw.githubusercontent.com/rolandhadi/shadow-dom-selector/main/xfind.min.js) directly by pasting the following JavaScript code into your browser's console:
 - Using as a Snippet
-  - You can also save the code as a snippet in your browser's developer tools:
+  - You can also [save the code](https://raw.githubusercontent.com/rolandhadi/shadow-dom-selector/main/xfind.min.js) as a snippet in your browser's developer tools:
       - Open your browser's developer tools (usually by pressing F12 or right-clicking on the page and selecting "Inspect").
       - Go to the "Sources" tab.
       - In the left panel, right-click in the "Snippets" section and select "New Snippet".
