@@ -42,8 +42,7 @@ xfind("body > div.container > div > div > form > button")
 ```css
 <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 ```
-.
-.
+---
 ### Find all matching elements
 ```javascript
 xfindAll("body > div.container > div > div > form > button")
