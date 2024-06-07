@@ -5,11 +5,6 @@
  * Author: Roland Ross L. Hadi
  * GitHub: https://github.com/rolandhadi/shadow-dom-selector
  *
- * Example usage:
- *   querySelectorAllXFind('downloads-item:nth-child(4) #remove');
- *   querySelectorXFind('#downloads-list .is-active a[href^="https://"]');
- *   querySelectorAllXFind('#downloads-list div#title-area + a');
- */
 
 /**
  * Traverses shadow DOMs to find a specific element using a complex selector.
@@ -22,17 +17,7 @@
  *   xfind('#downloads-list .is-active a[href^="https://"]');
  */
 function xfind(selector, root = document) {
-    validateSelector(selector);
-    const selectors = selector.split('>>>');
-    let currentElement = root;
-    for (const sel of selectors) {
-        currentElement = querySelectorXFind(sel, currentElement);
-        if (currentElement === null) {
-            console.error(`Selector ${sel} not found`);
-            return null;
-        }
-    }
-    return currentElement;
+    return performQuery(selector, false, root);
 }
 
 /**
@@ -46,39 +31,7 @@ function xfind(selector, root = document) {
  *   xfindAll('#downloads-list .is-active a[href^="https://"]');
  */
 function xfindAll(selector, root = document) {
-    validateSelector(selector);
-    const selectors = selector.split('>>>');
-    let currentElement = root;
-    for (let i = 0; i < selectors.length - 1; i++) {
-        currentElement = querySelectorXFind(selectors[i], currentElement);
-        if (currentElement === null) {
-            console.error(`Selector ${selectors[i]} not found`);
-            return [];
-        }
-    }
-    return querySelectorAllXFind(selectors[selectors.length - 1], currentElement);
-}
-
-/**
- * Queries all elements matching the selector in the shadow DOM.
- * @param {string} selector - The CSS selector to query.
- * @param {Document|ShadowRoot} root - The root element to start the search from.
- * @returns {NodeListOf<Element>|Array<Element>} - A list of found elements.
- */
-function querySelectorAllXFind(selector, root = document) {
-    validateSelector(selector);
     return performQuery(selector, true, root);
-}
-
-/**
- * Queries an element in the shadow DOM.
- * @param {string} selector - The CSS selector to query.
- * @param {Document|ShadowRoot} root - The root element to start the search from.
- * @returns {Element|null} - The found element or null if not found.
- */
-function querySelectorXFind(selector, root = document) {
-    validateSelector(selector);
-    return performQuery(selector, false, root);
 }
 
 /**
@@ -89,30 +42,75 @@ function querySelectorXFind(selector, root = document) {
  * @returns {Element|Array<Element>|null} - The found element(s) or null if not found.
  */
 function performQuery(selector, findMany, root) {
-    let elementInLightDom = root.querySelector(selector);
+    validateSelector(selector);
+    const selectors = selector.split('>>>');
+    let currentElement = root;
+
+    for (let i = 0; i < selectors.length; i++) {
+        if (i === selectors.length - 1 && findMany) {
+            return querySelectorAllXFind(selectors[i], currentElement);
+        }
+        currentElement = querySelectorXFind(selectors[i], currentElement);
+        if (currentElement === null) {
+            console.error(`Selector ${selectors[i]} not found`);
+            return findMany ? [] : null;
+        }
+    }
+    return currentElement;
+}
+
+/**
+ * Queries all elements matching the selector in the shadow DOM.
+ * @param {string} selector - The CSS selector to query.
+ * @param {Document|ShadowRoot} root - The root element to start the search from.
+ * @returns {NodeListOf<Element>|Array<Element>} - A list of found elements.
+ */
+function querySelectorAllXFind(selector, root = document) {
+    return queryInShadowDOM(selector, true, root);
+}
+
+/**
+ * Queries an element in the shadow DOM.
+ * @param {string} selector - The CSS selector to query.
+ * @param {Document|ShadowRoot} root - The root element to start the search from.
+ * @returns {Element|null} - The found element or null if not found.
+ */
+function querySelectorXFind(selector, root = document) {
+    return queryInShadowDOM(selector, false, root);
+}
+
+/**
+ * Performs a query within shadow DOM.
+ * @param {string} selector - The CSS selector to query.
+ * @param {boolean} findMany - Whether to find multiple elements or just one.
+ * @param {Document|ShadowRoot} root - The root element to start the search from.
+ * @returns {Element|Array<Element>|null} - The found element(s) or null if not found.
+ */
+function queryInShadowDOM(selector, findMany, root) {
+    let lightDomElement = root.querySelector(selector);
 
     if (document.head.createShadowRoot || document.head.attachShadow) {
-        if (!findMany && elementInLightDom) {
-            return elementInLightDom;
+        if (!findMany && lightDomElement) {
+            return lightDomElement;
         }
 
         const splitSelectors = splitByUnquotedCharacter(selector, ',');
-
         return splitSelectors.reduce((accumulator, sel) => {
             if (!findMany && accumulator) return accumulator;
+
             const refinedSelectors = splitByUnquotedCharacter(sel.trim().replace(/\s*([>+~])\s*/g, '$1'), ' ').filter(Boolean);
             const lastIndex = refinedSelectors.length - 1;
             const elementsToMatch = gatherAllElementsXFind(refinedSelectors[lastIndex], root);
             const matchedElements = matchElements(refinedSelectors, lastIndex, root);
+
             if (findMany) {
                 return accumulator.concat(elementsToMatch.filter(matchedElements));
             } else {
                 return elementsToMatch.find(matchedElements) || null;
             }
         }, findMany ? [] : null);
-
     } else {
-        return findMany ? root.querySelectorAll(selector) : elementInLightDom;
+        return findMany ? root.querySelectorAll(selector) : lightDomElement;
     }
 }
 
