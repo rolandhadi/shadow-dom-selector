@@ -33,9 +33,23 @@ This library allows you to find elements on a webpage, even if they are nested w
 
 ## Example Usage
 
-```javascript
-// Find the first matching element
-xfind('downloads-item:nth-child(4) #remove');
 
-// Find all matching elements
-xfindAll('#downloads-list .is-active a[href^="https://"]');
+### Find the first matching element
+```javascript
+xfind("body > div.container > div > div > form > button")
+```
+**Found 1 element(s)**
+```css
+<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+```
+.
+.
+### Find all matching elements
+```javascript
+xfindAll("body > div.container > div > div > form > button")
+```
+**Found 1 element(s)**
+```css
+[button.btn.btn-lg.btn-primary.btn-block]
+0: button.btn.btn-lg.btn-primary.btn-block
+```
