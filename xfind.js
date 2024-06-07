@@ -4,7 +4,7 @@
  *
  * Author: Roland Ross L. Hadi
  * GitHub: https://github.com/rolandhadi/shadow-dom-selector
- *
+ */
 
 /**
  * Traverses shadow DOMs to find a specific element using a complex selector.
@@ -17,7 +17,9 @@
  *   xfind('#downloads-list .is-active a[href^="https://"]');
  */
 function xfind(selector, root = document) {
-    return performQuery(selector, false, root);
+    const element = performQuery(selector, false, root);
+    console.log(`Found ${element ? 1 : 0} element(s)`);
+    return element;
 }
 
 /**
@@ -31,7 +33,9 @@ function xfind(selector, root = document) {
  *   xfindAll('#downloads-list .is-active a[href^="https://"]');
  */
 function xfindAll(selector, root = document) {
-    return performQuery(selector, true, root);
+    const elements = performQuery(selector, true, root);
+    console.log(`Found ${elements.length} element(s)`);
+    return elements;
 }
 
 /**
