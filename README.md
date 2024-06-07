@@ -14,6 +14,23 @@ This library allows you to find elements on a webpage, even if they are nested w
 - Validate CSS selectors.
 - Highlight found elements for debugging.
 
+## Installation
+- Using Browser Console
+  - You can use the Shadow DOM Selector library directly by pasting the following JavaScript code into your browser's console:
+- Using as a Snippet
+  - You can also save the code as a snippet in your browser's developer tools:
+      - Open your browser's developer tools (usually by pressing F12 or right-clicking on the page and selecting "Inspect").
+      - Go to the "Sources" tab.
+      - In the left panel, right-click in the "Snippets" section and select "New Snippet".
+      - Name your snippet (e.g., "Shadow DOM Selector").
+      - Copy and paste the entire JavaScript code into the snippet editor.
+      - Save the snippet.
+  - To run the snippet:
+      - Open the developer tools.
+      - Go to the "Sources" tab.
+      - Select your snippet from the "Snippets" section.
+      - lick the "Run" button (or press Ctrl+Enter) to execute the snippet.
+
 ## Example Usage
 
 ```javascript
